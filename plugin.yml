@@ -1,0 +1,8 @@
+name: Spawner
+main: Spawner\Main
+version: 2.0
+api: 2.0.0
+author: Ghast Noob
+commands:
+  mualong:
+    description: Dùng Để Mua Lồng
