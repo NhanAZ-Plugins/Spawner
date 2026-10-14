@@ -2,6 +2,7 @@
 
 namespace Spawner;
 
+use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\command\CommandSender;
 use pocketmine\command\Command;
@@ -36,44 +37,22 @@ class PTask extends PluginTask {
     
     
     if($tile instanceof MobSpawner) {
-      echo "Translating to $this->type";
-      
-      switch($this->type) {
-        case "zombie":
-        
-      $tile->setEntityId(32);
-      break;
-      
-      case "pigman":
-       $tile->setEntityId(36);
-       break;
-       
-      case "spider":
-       $tile->setEntityId(35);
-       break;
+      $entityIds = [
+        "zombie" => 32,
+        "skeleton" => 34,
+        "pigman" => 36,
+        "spider" => 35,
+        "iron_golem" => 20,
+        "blaze" => 43,
+        "pig" => 12,
+        "cow" => 11,
+        "chicken" => 10,
+        "squid" => 17
+      ];
 
-      case "iron_golem":
-      $tile->setEntityId(20);
-      break;
-      
-      case "blaze":
-      $tile->setEntityId(43);
-      break;
-      
-      case "pig":
-      $tile->setEntityId(12);
-      break;
-      
-      case "cow":
-      $tile->setEntityId(11);
-      break;
-      
-      case "chicken":
-      $tile->setEntityId(10);
-      break;
-
-      case "squid":
-      $tile->setEntityId(17);
+      if(isset($entityIds[$this->type])) {
+        $tile->setEntityId($entityIds[$this->type]);
+        $this->plugin->getLogger()->debug("Set spawner entity type to " . $this->type . ".");
       }
      }
    }
@@ -106,217 +85,100 @@ class Main extends PluginBase implements Listener {
     
     }
     
-    public function onCommand(CommandSender $s, Command $cmd, $label, array $args) {
-      
-      if($cmd->getName() == "mualong") {
-        
-        if(isset($args[0])) {
-          
-          if(strtolower($args[0]) == "danhsach") {
-            foreach($this->cfg->getAll() as $key => $val) {
-              
-              $s->sendMessage("§aLồng §b". $key .": §e". $val);
-              }
-            }
-            
-          switch(strtolower($args[0])) {
-            
-            case "squid":
-              
-               $pmoney = $this->eco->myMoney($s->getName());
-               
-               if($pmoney >= $this->cfg->get("squid")) {
-                 
-                 $this->eco->reduceMoney($s->getName(), $this->cfg->get("squid"));
-                 
-                 $spawnblock = Item::get(52, 0, 1);
-                 
-                 $spawnblock->setCustomName("§r§bSquid Spawner");
-                 
-                 $s->getInventory()->addItem($spawnblock);
-                 $s->sendMessage("§a»Bạn Đã Mua Lồng§b Squid Spawner!");
-                 } else {
-                   $s->sendMessage("§a»Bạn Không Đủ Tiền Để Mua Lồng : §a". $this->cfg->get("zombie") ."$");
-                   }
-                  break;
-                  
-            case "chicken":
-              
-               $pmoney = $this->eco->myMoney($s->getName());
-               
-               if($pmoney >= $this->cfg->get("chicken")) {
-                 
-                 $this->eco->reduceMoney($s->getName(), $this->cfg->get("chicken"));
-                 
-                 $spawnblock = Item::get(52, 0, 1);
-                 
-                 $spawnblock->setCustomName("§r§bChicken Spawner");
-                 
-                 $s->getInventory()->addItem($spawnblock);
-                 $s->sendMessage("§a»Bạn Đã Mua Lồng§b Chicken Spawner!");
-                 } else {
-                   $s->sendMessage("§a»Bạn Không Đủ Tiền Để Mua Lồng : §a". $this->cfg->get("zombie") ."$");
-                   }
-                  break;
-                  
-            case "cow":
-              
-               $pmoney = $this->eco->myMoney($s->getName());
-               
-               $this->eco->reduceMoney($s->getName(), $this->cfg->get("cow"));
-               
-               if($pmoney >= $this->cfg->get("cow")) {
-                 
-                 $spawnblock = Item::get(52, 0, 1);
-                 
-                 $spawnblock->setCustomName("§r§bCow Spawner");
-                 
-                 $s->getInventory()->addItem($spawnblock);
-                 $s->sendMessage("§a»Bạn Đã Mua Lồng§b Cow Spawner!");
-                 } else {
-                   $s->sendMessage("§a»Bạn Không Đủ Tiền Để Mua Lồng : §a". $this->cfg->get("zombie") ."$");
-                   }
-                  break;
-                  
-            case "pig":
-              
-               $pmoney = $this->eco->myMoney($s->getName());
-               
-               if($pmoney >= $this->cfg->get("pig")) {
-                 
-                 $this->eco->reduceMoney($s->getName(), $this->cfg->get("pig"));
-                 
-                 $spawnblock = Item::get(52, 0, 1);
-                 
-                 $spawnblock->setCustomName("§r§bPig Spawner");
-                 
-                 $s->getInventory()->addItem($spawnblock);
-                 $s->sendMessage("§a»Bạn Đã Mua Lồng§b Pig Spawner!");
-                 } else {
-                   $s->sendMessage("§a»Bạn Không Đủ Tiền Để Mua Lồng : §a". $this->cfg->get("zombie") ."$");
-                   }
-                  break;
-                  
-            case "blaze":
-              
-               $pmoney = $this->eco->myMoney($s->getName());
-               
-               if($pmoney >= $this->cfg->get("blaze")) {
-                 
-                 $this->eco->reduceMoney($s->getName(), $this->cfg->get("blaze"));
-                 
-                 $spawnblock = Item::get(52, 0, 1);
-                 
-                 $spawnblock->setCustomName("§r§bBlaze Spawner");
-                 
-                 $s->getInventory()->addItem($spawnblock);
-                 $s->sendMessage("§a»Bạn Đã Mua Lồng§b Blaze Spawner!");
-                 } else {
-                   $s->sendMessage("§a»Bạn Không Đủ Tiền Để Mua Lồng : §a". $this->cfg->get("zombie") ."$");
-                   }
-                  break;
-                  
-            case "iron_golem":
-              
-               $pmoney = $this->eco->myMoney($s->getName());
-               
-               if($pmoney >= $this->cfg->get("iron_golem")) {
-                 
-                 $this->eco->reduceMoney($s->getName(), $this->cfg->get("iron_golem"));
-                 
-                 $spawnblock = Item::get(52, 0, 1);
-                 
-                 $spawnblock->setCustomName("§r§bIron Golem Spawner");
-                 
-                 $s->getInventory()->addItem($spawnblock);
-                 $s->sendMessage("§a»Bạn Đã Mua Lồng§b Iron Golem Spawner!");
-                 } else {
-                   $s->sendMessage("§a»Bạn Không Đủ Tiền Để Mua Lồng : §a". $this->cfg->get("zombie") ."$");
-                   }
-                  break;
-                  
-            case "pigman":
-              
-               $pmoney = $this->eco->myMoney($s->getName());
-               
-               if($pmoney >= $this->cfg->get("pigman")) {
-                 
-                 $this->eco->reduceMoney($s->getName(), $this->cfg->get("pigman"));
-               
-                 $spawnblock = Item::get(52, 0, 1);
-                 
-                 $spawnblock->setCustomName("§r§bPigman Spawner");
-                 
-                 $s->getInventory()->addItem($spawnblock);
-                 $s->sendMessage("§a»Bạn Đã Mua Lồng§b PigMan Spawner!");
-                 } else {
-                   $s->sendMessage("§a»Bạn Không Đủ Tiền Để Mua Lồng : §a". $this->cfg->get("zombie") ."$");
-                   }
-                  break;
-                  
-            case "spider":
-              
-               $pmoney = $this->eco->myMoney($s->getName());
-               
-               if($pmoney >= $this->cfg->get("spider")) {
-                 
-                 $this->eco->reduceMoney($s->getName(), $this->cfg->get("spider"));
-                 
-                 $spawnblock = Item::get(52, 0, 1);
-                 
-                 $spawnblock->setCustomName("§r§bSpider Spawner");
-                 
-                 $s->getInventory()->addItem($spawnblock);
-                 $s->sendMessage("§a»Bạn Đã Mua Lồng§b Spider Spawner!");
-                 } else {
-                   $s->sendMessage("§a»Bạn Không Đủ Tiền Để Mua Lồng : §a". $this->cfg->get("zombie") ."$");
-                   }
-                  break;
-                  
-               case "skeleton":
-              
-               $pmoney = $this->eco->myMoney($s->getName());
-               
-               if($pmoney >= $this->cfg->get("skeleton")) {
-                 
-                 $this->eco->reduceMoney($s->getName(), $this->cfg->get("skeleton"));
-                 
-                 $spawnblock = Item::get(52, 0, 1);
-                 
-                 $spawnblock->setCustomName("§r§bSkeleton Spawner");
-                 
-                 $s->getInventory()->addItem($spawnblock);
-                 $s->sendMessage("§a»Bạn Đã Mua Lồng§b Skeleton Spawner!");
-                 } else {
-                   $s->sendMessage("§a»Bạn Không Đủ Tiền Để Mua Lồng : §a". $this->cfg->get("zombie") ."$");
-                   }
-                  break;
-                  
-            case "zombie":
-              
-               $pmoney = $this->eco->myMoney($s->getName());
-               
-               if($pmoney >= $this->cfg->get("zombie")) {
-                 
-                 $this->eco->reduceMoney($s->getName(), $this->cfg->get("zombie"));
-                 
-                 $spawnblock = Item::get(52, 0, 1);
-                 
-                 $spawnblock->setCustomName("§r§bZombie Spawner");
-                 
-                 $s->getInventory()->addItem($spawnblock);
-                 $s->sendMessage("§a»Bạn Đã Mua Lồng§b Zombie Spawner!");
-                 } else {
-                   $s->sendMessage("§a»Bạn Không Đủ Tiền Để Mua Lồng : §a". $this->cfg->get("zombie") ."§a$");
-                   }
-                  break;
-                }
-              } else {
-                $s->sendMessage("§bGhi:§e /mualong dangsach§b Để Xem Danh Sách Lồng. Ghi:§e /mualong (Tên Thú)§b Để Mua Lồng");
-                }
-              }
-            }
-            
+  public function onCommand(CommandSender $sender, Command $cmd, $label, array $args) {
+    if(strtolower($cmd->getName()) !== "mualong") {
+      return false;
+    }
+
+    if(!isset($args[0])) {
+      $sender->sendMessage("§bGhi: §e/mualong danhsach §bđể xem giá. Dùng §e/mualong <loài> §bđể mua lồng.");
+      return true;
+    }
+
+    $type = strtolower($args[0]);
+    if($type === "danhsach") {
+      foreach($this->cfg->getAll() as $key => $price) {
+        $sender->sendMessage("§aLồng §b" . $key . ": §e" . $price);
+      }
+      return true;
+    }
+
+    $types = ["zombie", "skeleton", "spider", "pigman", "iron_golem", "blaze", "pig", "cow", "chicken", "squid"];
+    if(!in_array($type, $types, true)) {
+      $sender->sendMessage("§cLoài không hợp lệ. Dùng /mualong danhsach để xem danh sách.");
+      return true;
+    }
+
+    if(!$sender instanceof Player) {
+      $sender->sendMessage("§cChỉ người chơi đang online mới có thể mua lồng.");
+      return true;
+    }
+
+    $this->purchaseSpawner($sender, $type);
+    return true;
+  }
+
+  private function purchaseSpawner(Player $player, $type) {
+    $price = $this->cfg->get($type, null);
+    if(!is_numeric($price) || !is_finite((float) $price) || (float) $price <= 0) {
+      $player->sendMessage("§cGiá lồng này chưa được cấu hình hợp lệ.");
+      return false;
+    }
+    $price = (float) $price;
+
+    $item = Item::get(52, 0, 1);
+    $displayName = ucwords(str_replace("_", " ", $type));
+    $item->setCustomName("§r§b" . $displayName . " Spawner");
+    $inventory = $player->getInventory();
+    if(!$inventory->canAddItem($item)) {
+      $player->sendMessage("§cHãy chừa một ô trống trong túi trước khi mua.");
+      return false;
+    }
+
+    $balance = $this->eco->myMoney($player->getName());
+    if(!is_numeric($balance) || (float) $balance < $price) {
+      $player->sendMessage("§cBạn không đủ tiền để mua lồng: " . $price . "$.");
+      return false;
+    }
+
+    $result = $this->eco->reduceMoney($player->getName(), $price);
+    if($result !== EconomyAPI::RET_SUCCESS) {
+      $player->sendMessage("§cGiao dịch không thành công. Tiền chưa bị trừ.");
+      return false;
+    }
+
+    if(!$inventory->canAddItem($item)) {
+      $refund = $this->eco->addMoney($player->getName(), $price);
+      if($refund === EconomyAPI::RET_SUCCESS) {
+        $player->sendMessage("§cTúi đã đầy trong lúc giao dịch; tiền đã được hoàn lại.");
+        return false;
+      }
+
+      $player->getLevel()->dropItem($player, $item);
+      $this->getLogger()->critical("Could not refund or store a paid spawner for " . $player->getName() . "; dropped it at the player's location.");
+      $player->sendMessage("§eGiao dịch đã trừ tiền nhưng không hoàn được; lồng đã được thả tại vị trí của bạn.");
+      return false;
+    }
+
+    $leftovers = $inventory->addItem($item);
+    if(count($leftovers) > 0) {
+      $refund = $this->eco->addMoney($player->getName(), $price);
+      if($refund === EconomyAPI::RET_SUCCESS) {
+        $player->sendMessage("§cKhông thể cất lồng vào túi; tiền đã được hoàn lại.");
+        return false;
+      }
+      foreach($leftovers as $leftover) {
+        $player->getLevel()->dropItem($player, $leftover);
+      }
+      $this->getLogger()->critical("Could not refund a paid spawner for " . $player->getName() . "; dropped the item at the player's location.");
+      $player->sendMessage("§eGiao dịch đã trừ tiền nhưng không hoàn được; lồng đã được thả tại vị trí của bạn.");
+      return false;
+    }
+
+    $player->sendMessage("§a» Bạn đã mua lồng §b" . $displayName . " Spawner§a!");
+    return true;
+  }
+
         public function onPlace(BlockPlaceEvent $ev) {
           $p = $ev->getPlayer();
 
@@ -379,6 +241,12 @@ class Main extends PluginBase implements Listener {
              }
            }
            
+  private function giveSpawnerItem(Player $player, Item $item) {
+    foreach($player->getInventory()->addItem($item) as $leftover) {
+      $player->getLevel()->dropItem($player, $leftover);
+    }
+  }
+
            public function onBreak(BlockBreakEvent $ev) {
            
            $block = $ev->getBlock();
@@ -394,64 +262,64 @@ class Main extends PluginBase implements Listener {
               
               switch($eid) {
               
-              case "32":
+              case 32:
               $item = Item::get(52, 0, 1);
               $item->setCustomName("§r§bZombie Spawner");
-              $player->getInventory()->addItem($item);
+              $this->giveSpawnerItem($player, $item);
               break;
               
-              case "33":
+              case 36:
               $item = Item::get(52, 0, 1);
               $item->setCustomName("§r§bPigman Spawner");
-              $player->getInventory()->addItem($item);
+              $this->giveSpawnerItem($player, $item);
               break;
               
-              case "34":
+              case 34:
               $item = Item::get(52, 0, 1);
               $item->setCustomName("§r§bSkeleton Spawner");
-              $player->getInventory()->addItem($item);
+              $this->giveSpawnerItem($player, $item);
               break;
               
-              case "35":
+              case 35:
               $item = Item::get(52, 0, 1);
               $item->setCustomName("§r§bSpider Spawner");
-              $player->getInventory()->addItem($item);
+              $this->giveSpawnerItem($player, $item);
               break;
               
-              case "20":
+              case 20:
               $item = Item::get(52, 0, 1);
               $item->setCustomName("§r§bIron Golem Spawner");
-              $player->getInventory()->addItem($item);
+              $this->giveSpawnerItem($player, $item);
               break;
               
-              case "43":
+              case 43:
               $item = Item::get(52, 0, 1);
               $item->setCustomName("§r§bBlaze Spawner");
-              $player->getInventory()->addItem($item);
+              $this->giveSpawnerItem($player, $item);
               break;
               
-              case "12":
+              case 12:
               $item = Item::get(52, 0, 1);
               $item->setCustomName("§r§bPig Spawner");
-              $player->getInventory()->addItem($item);
+              $this->giveSpawnerItem($player, $item);
               break;
               
-              case "10":
+              case 11:
               $item = Item::get(52, 0, 1);
               $item->setCustomName("§r§bCow Spawner");
-              $player->getInventory()->addItem($item);
+              $this->giveSpawnerItem($player, $item);
               break;
               
-              case "11":
+              case 10:
               $item = Item::get(52, 0, 1);
               $item->setCustomName("§r§bChicken Spawner");
-              $player->getInventory()->addItem($item);
+              $this->giveSpawnerItem($player, $item);
               break;
               
-              case "13":
+              case 17:
               $item = Item::get(52, 0, 1);
               $item->setCustomName("§r§bSquid Spawner");
-              $player->getInventory()->addItem($item);
+              $this->giveSpawnerItem($player, $item);
               break;
               }
             }
