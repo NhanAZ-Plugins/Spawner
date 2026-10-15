@@ -1,15 +1,24 @@
 # Spawner
 
-Spawner is a historical PocketMine-MP plugin for buying and placing mob spawner blocks with EconomyAPI.
+Spawner provides an EconomyAPI shop for configured mob spawner blocks on Axolotl-PM API 5.
 
-## Compatibility and status
+## Compatibility
 
-The manifest declares PocketMine-MP API `2.0.0`. The source uses legacy block IDs, `MobSpawner`, `PluginTask` and EconomyAPI. It has not been ported to Axolotl-PM 5. Do not install it on a current Axolotl-PM server or use it with real player balances.
+- Minimum Axolotl-PM API: `5.0.0`.
+- CI checks PHPStan at maximum level and builds against the exact Axolotl-PM API source revisions for `5.0.0` and `5.49.2`. These are the verified compatibility points; intermediate patch releases are not inferred from the matrix.
+- Runtime smoke tests load the built plugin with EconomyAPI on Axolotl-PM `5.49.2`.
+- Requires the `EconomyAPI` plugin.
 
-The manifest now declares `EconomyAPI` as a required plugin. `/mualong` purchases require a positive configured price, a sufficient balance, a successful EconomyAPI transaction result and inventory capacity before the spawner is delivered. If an inventory change during the synchronous transaction prevents delivery, the plugin attempts a checked refund and drops the item if the refund is rejected. Spawner entity IDs are mapped consistently when placing and recovering a spawner.
+## Current server limitation
 
-## Maintenance limits
+This plugin stores the Bedrock `EntityIdentifier` on purchased spawner items, restores the type when a Silk Touch spawner is collected, and preserves the spawner tile data. Axolotl-PM `5.49.2` currently leaves the vanilla monster spawner's scheduled update unimplemented, so the server does not spawn mobs from these blocks. The shop and type-data handling are tested; mob spawning is not provided by this release.
 
-There is no CI workflow, DevTools PHAR, Axolotl-PM 5 runtime test or verified release for this repository. No license file is present. Preserve the `Ghast Noob` author credit from `plugin.yml`, and resolve redistribution rights before publishing a modified build.
+The supported shop types are zombie, skeleton, pigman, spider, iron golem, blaze, pig, cow, chicken and squid. Their prices are in the generated `settings.yml` file in the plugin data folder.
+
+## Build and validation
+
+GitHub Actions uses [DevTools](https://github.com/NhanAZ/DevTools) to run PHPStan at maximum level, build the plugin PHAR and validate its contents. Workflow dependencies and server artifacts are pinned to exact revisions or checksums for reproducibility. The hosted workflow also performs a server startup smoke test with the built PHAR.
+
+The repository preserves the historical `Ghast Noob` author credit. No `LICENSE` file is present, so the source does not grant a general reuse license.
 
 For questions about the NhanAZ ecosystem, use [NhanAZ Discord](https://discord.gg/j2X83ujT6c).

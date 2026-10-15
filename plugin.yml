@@ -1,10 +1,13 @@
 name: Spawner
 main: Spawner\Main
-version: 2.0
-api: 2.0.0
+version: 3.0.0
+api: 5.0.0
 author: Ghast Noob
-depend:
-- EconomyAPI
+depend: [EconomyAPI]
 commands:
   mualong:
-    description: Dùng Để Mua Lồng
+    description: Mua lồng quái bằng EconomyAPI
+    permission: spawner.command
+permissions:
+  spawner.command:
+    default: true
