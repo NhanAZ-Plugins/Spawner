@@ -24,4 +24,9 @@ The supported shop types are zombie, skeleton, pigman, spider, iron golem, blaze
 
 GitHub Actions uses [DevTools](https://github.com/NhanAZ/DevTools) to run PHPStan at maximum level, build the plugin PHAR and validate its contents. Workflow dependencies and server artifacts are pinned to exact revisions or checksums for reproducibility. The hosted workflow also performs a server startup smoke test with the built PHAR.
 
-The repository preserves the historical `Ghast Noob` author credit. No `LICENSE` file is present, so the source does not grant a general reuse license.
+The repository preserves the historical `NhanAZ` author credit. No `LICENSE` file is present, so the source does not grant a general reuse license.
+
+
+## Credits
+
+Authors: NhanAZ.
