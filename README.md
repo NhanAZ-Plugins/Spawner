@@ -1,6 +1,11 @@
 # Spawner
 
-Spawner provides an EconomyAPI shop for configured mob spawner blocks on Axolotl-PM API 5.
+EconomyAPI spawner shop for Axolotl-PM API 5; mob spawning depends on the server.
+
+[![CI](https://github.com/NhanAZ-Plugins/Spawner/actions/workflows/build.yml/badge.svg)](https://github.com/NhanAZ-Plugins/Spawner/actions/workflows/build.yml)
+[![Latest release](https://img.shields.io/github/v/release/NhanAZ-Plugins/Spawner)](https://github.com/NhanAZ-Plugins/Spawner/releases/latest)
+[![Discord](https://img.shields.io/discord/986553214889517088?label=Discord&logo=discord&logoColor=white&color=5865F2)](https://discord.gg/j2X83ujT6c)
+
 
 ## Compatibility
 
@@ -20,5 +25,3 @@ The supported shop types are zombie, skeleton, pigman, spider, iron golem, blaze
 GitHub Actions uses [DevTools](https://github.com/NhanAZ/DevTools) to run PHPStan at maximum level, build the plugin PHAR and validate its contents. Workflow dependencies and server artifacts are pinned to exact revisions or checksums for reproducibility. The hosted workflow also performs a server startup smoke test with the built PHAR.
 
 The repository preserves the historical `Ghast Noob` author credit. No `LICENSE` file is present, so the source does not grant a general reuse license.
-
-For questions about the NhanAZ ecosystem, use [NhanAZ Discord](https://discord.gg/j2X83ujT6c).
