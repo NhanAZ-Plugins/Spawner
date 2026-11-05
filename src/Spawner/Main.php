@@ -39,33 +39,33 @@ final class Main extends PluginBase implements Listener{
 	}
 
 	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
-		if(strtolower($command->getName()) !== "mualong"){
+		if(!in_array(strtolower($command->getName()), ["spawner", "mualong"], true)){
 			return false;
 		}
 
 		if(!isset($args[0])){
-			$sender->sendMessage("§bGhi: §e/mualong danhsach §bđể xem giá. Dùng §e/mualong <loài> §bđể mua lồng.");
+			$sender->sendMessage("§eUsage: /spawner list or /spawner <type>");
 			return true;
 		}
 
 		$type = strtolower($args[0]);
-		if($type === "danhsach"){
+		if(in_array($type, ["danhsach", "list"], true)){
 			foreach(SpawnerType::getAllTypes() as $availableType){
-				$price = $this->config->get($availableType, "chưa cấu hình");
-				$displayPrice = is_scalar($price) ? (string) $price : "cấu hình không hợp lệ";
-				$sender->sendMessage("§aLồng §b" . $availableType . ": §e" . $displayPrice);
+				$price = $this->config->get($availableType, "not configured");
+				$displayPrice = is_scalar($price) ? (string) $price : "invalid configuration";
+				$sender->sendMessage("§a" . $availableType . " spawner: §e" . $displayPrice);
 			}
 			return true;
 		}
 
 		$displayName = SpawnerType::getDisplayName($type);
 		if($displayName === null){
-			$sender->sendMessage("§cLoài không hợp lệ. Dùng /mualong danhsach để xem danh sách.");
+			$sender->sendMessage("§cInvalid spawner type. Use /spawner list to see available types.");
 			return true;
 		}
 
 		if(!$sender instanceof Player){
-			$sender->sendMessage("§cChỉ người chơi đang online mới có thể mua lồng.");
+			$sender->sendMessage("§cOnly players can buy spawners.");
 			return true;
 		}
 
@@ -76,7 +76,7 @@ final class Main extends PluginBase implements Listener{
 	private function purchaseSpawner(Player $player, string $type, string $displayName) : bool{
 		$price = $this->config->get($type, null);
 		if(!is_numeric($price) || !is_finite((float) $price) || (float) $price <= 0){
-			$player->sendMessage("§cGiá lồng này chưa được cấu hình hợp lệ.");
+			$player->sendMessage("§cThis spawner has an invalid configured price.");
 			return false;
 		}
 		$price = (float) $price;
@@ -84,26 +84,26 @@ final class Main extends PluginBase implements Listener{
 		$item = $this->createSpawnerItem($type);
 		$inventory = $player->getInventory();
 		if(!$inventory->canAddItem($item)){
-			$player->sendMessage("§cHãy chừa một ô trống trong túi trước khi mua.");
+			$player->sendMessage("§cFree an inventory slot before buying a spawner.");
 			return false;
 		}
 
 		$playerName = $player->getName();
 		$balance = $this->economy->myMoney($playerName);
 		if(!is_numeric($balance) || (float) $balance < $price){
-			$player->sendMessage("§cBạn không đủ tiền để mua lồng: " . $price . "$.");
+			$player->sendMessage("§cYou cannot afford this spawner: " . $price . ".");
 			return false;
 		}
 
 		if($this->economy->reduceMoney($playerName, $price) !== EconomyAPI::RET_SUCCESS){
-			$player->sendMessage("§cGiao dịch không thành công. Tiền chưa bị trừ.");
+			$player->sendMessage("§cThe transaction failed; your balance was not changed.");
 			return false;
 		}
 
 		$leftovers = $inventory->addItem($item);
 		if(count($leftovers) > 0){
 			if($this->economy->addMoney($playerName, $price) === EconomyAPI::RET_SUCCESS){
-				$player->sendMessage("§cKhông thể cất lồng vào túi; tiền đã được hoàn lại.");
+				$player->sendMessage("§cThe spawner could not be added; your money was refunded.");
 				return false;
 			}
 
@@ -111,11 +111,11 @@ final class Main extends PluginBase implements Listener{
 				$this->dropItemAtPlayer($player, $leftover);
 			}
 			$this->getLogger()->critical("Could not refund a paid spawner for " . $playerName . "; dropped the item at the player's location.");
-			$player->sendMessage("§eGiao dịch đã trừ tiền nhưng không hoàn được; lồng đã được thả tại vị trí của bạn.");
+			$player->sendMessage("§ePayment succeeded but could not be refunded; the spawner was dropped at your position.");
 			return false;
 		}
 
-		$player->sendMessage("§a» Bạn đã mua lồng §b" . $displayName . " Spawner§a!");
+		$player->sendMessage("§aPurchased " . $displayName . " spawner.");
 		return true;
 	}
 

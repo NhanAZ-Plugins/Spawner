@@ -5,8 +5,10 @@ api: 5.0.0
 author: NhanAZ
 depend: [EconomyAPI]
 commands:
-  mualong:
-    description: Mua lồng quái bằng EconomyAPI
+  spawner:
+    description: Buy configured spawners with EconomyAPI
+    usage: /spawner <type|list>
+    aliases: [mualong]
     permission: spawner.command
 permissions:
   spawner.command:
